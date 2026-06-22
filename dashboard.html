@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="header">
+
+    <div class="header-left">
+
+        <img src="images/csir-logo.png" alt="CSIR Logo" class="logo">
+
+        <div>
+            <h1>CSIR Canteen Dashboard</h1>
+            <p id="welcome"></p>
+        </div>
+
+    </div>
+
+    <button onclick="logout()">Logout</button>
+
+</div>
+
+<!-- CARDS -->
+<div class="cards">
+
+    <div class="card">
+        <h3>📦 Total Items</h3>
+        <p id="totalItems">0</p>
+    </div>
+
+    <!-- LOW STOCK CARD (CLICKABLE BUTTON STYLE) -->
+    <div class="card" onclick="toggleLowStock()" id="lowStockCard">
+        <h3>⚠️ Low Stock Items</h3>
+        <p id="lowStock">0</p>
+    </div>
+
+</div>
+
+<!-- ADD ITEM -->
+<div class="form-card">
+
+    <h2>➕ Add New Item</h2>
+
+    <input type="text" id="itemName" placeholder="Item Name">
+    <input type="number" id="itemStock" placeholder="Stock Quantity">
+    <input type="text" id="itemUnit" placeholder="Unit">
+
+    <button onclick="addItem()">Add Item</button>
+
+    <p id="addMsg"></p>
+
+</div>
+
+<!-- SEARCH -->
+<div class="search-card">
+
+    <h2>🔍 Search Item</h2>
+
+    <div class="search-bar">
+
+        <input type="text" id="searchInput" placeholder="Enter item name">
+
+        <button onclick="searchItem()">Search</button>
+        <button onclick="loadDashboard()">Show All</button>
+
+    </div>
+
+</div>
+
+<!-- LOW STOCK TABLE (TOGGLED) -->
+<div class="table-card hidden" id="lowStockSection">
+
+    <h2 class="low-stock-heading">⚠ Low Stock Items</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Stock</th>
+                <th>Unit</th>
+            </tr>
+        </thead>
+
+        <tbody id="lowStockTable"></tbody>
+    </table>
+
+</div>
+
+<!-- INVENTORY -->
+<div class="table-card">
+
+    <h2>📦 Inventory</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Stock</th>
+                <th>Unit</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody id="itemsTable"></tbody>
+    </table>
+
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+    CSIR Canteen Stock Management System
+</footer>
+
+<script src="app.js"></script>
+
+</body>
+</html>
