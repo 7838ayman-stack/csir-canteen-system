@@ -211,14 +211,12 @@ function addItem() {
     })
     .then(res => res.json())
     .then(data => {
-
-        document.getElementById("addMsg").innerText = data.message;
-
-        document.getElementById("itemName").value = "";
-        document.getElementById("itemStock").value = "";
-        document.getElementById("itemUnit").value = "";
-
-        loadDashboard();
+        document.getElementById("addMsg").innerText = data.message || "Item Added";
+        loadDashboard(); // refresh table if you have this function
+    })
+    .catch(err => {
+        console.log(err);
+        document.getElementById("addMsg").innerText = "Error adding item";
     });
 }
 
