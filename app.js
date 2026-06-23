@@ -40,7 +40,7 @@ function loadDashboard() {
     const admin = localStorage.getItem("admin");
 
     if (!admin) {
-        window.location.href = "login.html";
+        window.location.href = "index.html";
         return;
     }
 
@@ -226,5 +226,5 @@ function addItem() {
 // ---------------- LOGOUT ----------------
 function logout() {
     localStorage.removeItem("admin");
-    window.location.href = "login.html";
+    window.location.href = "index.html";
 }
