@@ -200,21 +200,16 @@ function addItem() {
 
     fetch("https://csir-canteen-backend.onrender.com/api/items", {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            name,
-            stock_quantity,
-            unit
-        })
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, stock_quantity, unit })
     })
     .then(res => res.json())
     .then(data => {
-        document.getElementById("addMsg").innerText = data.message || "Item Added";
-        setTimeout(() => {
-    loadDashboard();
-}, 800);// refresh table if you have this function
+
+        document.getElementById("addMsg").innerText = data.message;
+
+        loadDashboard(); // refresh table
+
     })
     .catch(err => {
         console.log(err);
