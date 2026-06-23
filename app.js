@@ -212,7 +212,9 @@ function addItem() {
     .then(res => res.json())
     .then(data => {
         document.getElementById("addMsg").innerText = data.message || "Item Added";
-        loadDashboard(); // refresh table if you have this function
+        setTimeout(() => {
+    loadDashboard();
+}, 800);// refresh table if you have this function
     })
     .catch(err => {
         console.log(err);
