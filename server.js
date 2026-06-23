@@ -34,56 +34,27 @@ app.get("/api/items", (req, res) => {
 });
 app.post("/api/items", (req, res) => {
 
-    try {
+    let { name, stock_quantity, unit } = req.body;
 
-        let { name, stock_quantity, unit } = req.body;
+    stock_quantity = Number(stock_quantity);
 
-        // Convert stock to number safely
-        stock_quantity = Number(stock_quantity);
+    if (!name || !unit || isNaN(stock_quantity) || stock_quantity < 0) {
+        return res.status(400).json({ message: "Invalid Input Data" });
+    }
 
-        // Validation (SAFE & COMPLETE)
-        if (
-            !name ||
-            !unit ||
-            stock_quantity === undefined ||
-            stock_quantity === null ||
-            isNaN(stock_quantity) ||
-            stock_quantity < 0
-        ) {
-            return res.status(400).json({
-                message: "Invalid Input Data"
-            });
+    const query =
+        "INSERT INTO items (name, stock_quantity, unit) VALUES (?, ?, ?)";
+
+    connection.query(query, [name, stock_quantity, unit], (err, result) => {
+
+        if (err) {
+            console.log(err);
+            return res.status(500).json({ error: err.message });
         }
 
-        const query =
-            "INSERT INTO items (name, stock_quantity, unit) VALUES (?, ?, ?)";
+        res.json({ message: "Item Added Successfully" });
 
-        connection.query(
-            query,
-            [name, stock_quantity, unit],
-            (err, result) => {
-
-                if (err) {
-                    console.log("DB ERROR:", err);
-                    return res.status(500).json({
-                        error: err.message
-                    });
-                }
-
-                return res.json({
-                    message: "Item Added Successfully",
-                    insertedId: result.insertId
-                });
-
-            }
-        );
-
-    } catch (error) {
-        console.log("SERVER ERROR:", error);
-        return res.status(500).json({
-            message: "Internal Server Error"
-        });
-    }
+    });
 
 });
 
