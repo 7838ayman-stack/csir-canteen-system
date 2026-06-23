@@ -34,33 +34,56 @@ app.get("/api/items", (req, res) => {
 });
 app.post("/api/items", (req, res) => {
 
-    const { name, stock_quantity, unit } = req.body;
-    if (!name || !unit || stock_quantity < 0) {
-    return res.status(400).json({
-        message: "Invalid Input Data"
-    });
-    }
+    try {
 
-    const query =
-        "INSERT INTO items (name, stock_quantity, unit) VALUES (?, ?, ?)";
+        let { name, stock_quantity, unit } = req.body;
 
-    connection.query(
-        query,
-        [name, stock_quantity, unit],
-        (err, result) => {
+        // Convert stock to number safely
+        stock_quantity = Number(stock_quantity);
 
-            if (err) {
-                return res.status(500).json({
-                    error: err.message
-                });
-            }
-
-            res.json({
-                message: "Item Added Successfully"
+        // Validation (SAFE & COMPLETE)
+        if (
+            !name ||
+            !unit ||
+            stock_quantity === undefined ||
+            stock_quantity === null ||
+            isNaN(stock_quantity) ||
+            stock_quantity < 0
+        ) {
+            return res.status(400).json({
+                message: "Invalid Input Data"
             });
-
         }
-    );
+
+        const query =
+            "INSERT INTO items (name, stock_quantity, unit) VALUES (?, ?, ?)";
+
+        connection.query(
+            query,
+            [name, stock_quantity, unit],
+            (err, result) => {
+
+                if (err) {
+                    console.log("DB ERROR:", err);
+                    return res.status(500).json({
+                        error: err.message
+                    });
+                }
+
+                return res.json({
+                    message: "Item Added Successfully",
+                    insertedId: result.insertId
+                });
+
+            }
+        );
+
+    } catch (error) {
+        console.log("SERVER ERROR:", error);
+        return res.status(500).json({
+            message: "Internal Server Error"
+        });
+    }
 
 });
 
