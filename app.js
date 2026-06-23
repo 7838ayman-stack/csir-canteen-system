@@ -4,7 +4,7 @@ function login() {
     const username = document.getElementById("username").value;
     const password = document.getElementById("password").value;
 
-    fetch("http://localhost:3000/api/login", {
+    fetch("https://csir-canteen-backend.onrender.com/api/login", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -48,7 +48,7 @@ function loadDashboard() {
         "Welcome, " + admin;
 
     // Stats
-    fetch("http://localhost:3000/api/dashboard")
+    fetch("https://csir-canteen-backend.onrender.com/api/dashboard")
         .then(res => res.json())
         .then(data => {
 
@@ -62,7 +62,7 @@ function loadDashboard() {
 
 
     // Low stock items
-    fetch("http://localhost:3000/api/items/low-stock")
+    fetch("https://csir-canteen-backend.onrender.com/api/items/low-stock")
         .then(res => res.json())
         .then(data => {
 
@@ -87,7 +87,7 @@ function loadDashboard() {
 
 
     // Inventory
-    fetch("http://localhost:3000/api/items")
+    fetch("https://csir-canteen-backend.onrender.com/api/items")
         .then(res => res.json())
         .then(data => {
 
@@ -126,7 +126,7 @@ function searchItem() {
 
     const name = document.getElementById("searchInput").value;
 
-    fetch(`http://localhost:3000/api/items/search?name=${name}`)
+    fetch(`https://csir-canteen-backend.onrender.com/api/items/search?name=${name}`)
         .then(res => res.json())
         .then(data => {
 
@@ -156,7 +156,7 @@ function deleteItem(id) {
 
     if (!confirm("Are you sure you want to delete this item?")) return;
 
-    fetch(`http://localhost:3000/api/items/${id}`, {
+    fetch(`https://csir-canteen-backend.onrender.com/api/items/${id}`, {
         method: "DELETE"
     })
     .then(res => res.json())
@@ -174,7 +174,7 @@ function updateStock(id) {
 
     if (stock === null) return;
 
-    fetch(`http://localhost:3000/api/items/${id}`, {
+    fetch(`https://csir-canteen-backend.onrender.com/api/items/${id}`, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json"
@@ -198,7 +198,7 @@ function addItem() {
     const stock_quantity = document.getElementById("itemStock").value;
     const unit = document.getElementById("itemUnit").value;
 
-    fetch("http://localhost:3000/api/items", {
+    fetch("https://csir-canteen-backend.onrender.com/api/items", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
