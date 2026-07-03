@@ -361,3 +361,60 @@ tr:hover {
     transform: translateY(-6px);
     box-shadow: 0 12px 28px rgba(0,0,0,0.12);
 }
+
+
+.dropdown-menu {
+    position: absolute;
+    right: 0;
+    background: white;
+    border: 1px solid #ccc;
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    z-index: 100;
+}
+
+.hidden {
+    display: none;
+}
+
+
+.action-menu {
+    position: absolute;
+    background: #fff !important;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    z-index: 99999;
+    opacity: 1 !important;
+    color: #000;
+}
+
+.action-menu button {
+    background:#005377;
+    border: none;
+    padding: 10px 14px;
+    text-align: left;
+    cursor: pointer;
+    font-size: 14px;
+    color: #ffffff;
+    width: 170px;
+    border-radius: 6px;
+    transition: 0.2s;
+}
+
+.action-menu button:hover {
+    background: #78ABC6;
+}
+
+
+.hidden {
+    display: none !important;
+}
+
+
