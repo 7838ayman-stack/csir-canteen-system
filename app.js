@@ -464,3 +464,56 @@ function loadHistory() {
 function openHistory() {
     window.location.href = "history.html";
 }
+
+
+function filterHistory() {
+
+    const from = document.getElementById("fromDate").value;
+    const to = document.getElementById("toDate").value;
+
+    fetch("https://csir-canteen-backend.onrender.com/api/history")
+        .then(res => res.json())
+        .then(data => {
+
+            let filteredData = data;
+
+            if (from) {
+                filteredData = filteredData.filter(item =>
+                    new Date(item.created_at) >= new Date(from)
+                );
+            }
+
+            if (to) {
+                filteredData = filteredData.filter(item =>
+                    new Date(item.created_at) <= new Date(to + "T23:59:59")
+                );
+            }
+
+            let html = "";
+
+            filteredData.forEach(item => {
+
+                const formattedDate = new Date(item.created_at).toLocaleString("en-IN", {
+                    timeZone: "Asia/Kolkata",
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: true
+                });
+
+                html += `
+                    <tr>
+                        <td>${item.item_name}</td>
+                        <td>${item.change_quantity}</td>
+                        <td>${item.final_stock}</td>
+                        <td>${item.action_type}</td>
+                        <td>${formattedDate}</td>
+                    </tr>
+                `;
+            });
+
+            document.getElementById("historyTable").innerHTML = html;
+        });
+}
