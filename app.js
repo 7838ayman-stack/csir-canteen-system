@@ -1,3 +1,4 @@
+let selectedItemId = null;
 
 function login() {
 
@@ -84,31 +85,7 @@ function loadDashboard() {
 
             document.getElementById("lowStockTable").innerHTML = html;
         });
-
-
-    // Inventory
-    fetch("https://csir-canteen-backend.onrender.com/api/items")
-        .then(res => res.json())
-        .then(data => {
-
-            let html = "";
-
-            data.forEach(item => {
-                html += `
-                    <tr>
-                        <td>${item.name}</td>
-                        <td>${item.stock_quantity}</td>
-                        <td>${item.unit}</td>
-                        <td>
-                            <button onclick="updateStock(${item.id})">Update</button>
-                            <button onclick="deleteItem(${item.id})">Delete</button>
-                        </td>
-                    </tr>
-                `;
-            });
-
-            document.getElementById("itemsTable").innerHTML = html;
-        });
+        
 }
 
 
@@ -222,4 +199,259 @@ function addItem() {
 function logout() {
     localStorage.removeItem("admin");
     window.location.href = "index.html";
+}
+
+
+function openItemsPage() {
+    window.location.href = "items.html";
+}
+
+
+function loadItemsPage() {
+
+    fetch("https://csir-canteen-backend.onrender.com/api/items")
+        .then(res => res.json())
+        .then(data => {
+
+            let html = "";
+
+            data.forEach(item => {
+                html += `
+                    <tr>
+                        <td>${item.name}</td>
+                        <td>${item.stock_quantity}</td>
+                        <td>${item.unit}</td>
+                        <td style="position:relative;">
+                
+                    <button class="menu-btn" onclick="openMenu(event, ${item.id})">
+                        ⋮
+                    </button>
+
+                        <div id="menu-${item.id}" class="dropdown-menu hidden">
+                            <button onclick="increasePrompt(${item.id})">➕ Increase</button>
+                            <button onclick="decreasePrompt(${item.id})">➖ Decrease</button>
+                            <button onclick="deleteItem(${item.id})">🗑 Delete</button>
+                        </div>
+
+                        </td>
+                    </tr>
+                `;
+            });
+
+            document.getElementById("itemsTable").innerHTML = html;
+        })
+        .catch(err => {
+            console.log(err);
+            document.getElementById("itemsTable").innerHTML =
+                "<tr><td colspan='3'>Error loading items</td></tr>";
+        });
+}
+
+
+function loadLowStockPage() {
+
+    fetch("https://csir-canteen-backend.onrender.com/api/items/low-stock")
+        .then(res => res.json())
+        .then(data => {
+
+            let html = "";
+
+            if (data.length === 0) {
+                html = `<tr><td colspan="3">No low stock items 🎉</td></tr>`;
+            } else {
+                data.forEach(item => {
+                    html += `
+                        <tr>
+                            <td>${item.name}</td>
+                            <td>${item.stock_quantity}</td>
+                            <td>${item.unit}</td>
+                        </tr>
+                    `;
+                });
+            }
+
+            document.getElementById("lowStockTable").innerHTML = html;
+        });
+}
+
+
+function openLowStockPage() {
+    window.location.href = "lowstock.html";
+}
+
+
+
+
+function toggleMenu(id) {
+
+    const menu = document.getElementById(`menu-${id}`);
+
+    // close all other menus first
+    document.querySelectorAll(".dropdown-menu").forEach(m => {
+        if (m !== menu) m.classList.add("hidden");
+    });
+
+    menu.classList.toggle("hidden");
+}
+
+
+function increasePrompt(id) {
+    const value = prompt("Enter stock to ADD:");
+    if (value === null) return;
+
+    updateStockChange(id, Number(value)); // positive
+}
+
+function decreasePrompt(id) {
+    const value = prompt("Enter stock to REMOVE:");
+    if (value === null) return;
+
+    updateStockChange(id, -Number(value)); // negative
+}
+
+
+function updateStockChange(id, change) {
+
+    fetch(`https://csir-canteen-backend.onrender.com/api/items/${id}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            stock_change: change
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        alert(data.message);
+        loadItemsPage();
+    });
+}
+
+
+function openMenu(event, itemId) {
+
+    selectedItemId = itemId;
+
+    const menu = document.getElementById("actionMenu");
+
+    menu.style.left = (event.pageX + 10) + "px";
+    menu.style.top = (event.pageY + 10) + "px";
+
+    menu.classList.remove("hidden");
+}
+
+
+document.addEventListener("click", function (event) {
+
+    const menu = document.getElementById("actionMenu");
+
+    const isClickInsideMenu = menu.contains(event.target);
+
+    const isClickOnButton = event.target.closest(".menu-btn");
+
+    if (!isClickInsideMenu && !isClickOnButton) {
+        menu.classList.add("hidden");
+    }
+
+});
+
+
+function updateStock(id, change) {
+
+    fetch(`https://csir-canteen-backend.onrender.com/api/items/${id}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            stock_quantity: change
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+
+        alert(data.message);
+
+        loadItemsPage();
+
+        document.getElementById("actionMenu").classList.add("hidden");
+
+    })
+    .catch(err => {
+        console.log(err);
+        alert("Error updating stock");
+    });
+}
+
+
+function increaseStock() {
+
+    const value = prompt("Enter quantity to ADD:");
+
+    if (value === null || value === "") return;
+
+    fetch(`https://csir-canteen-backend.onrender.com/api/items`)
+        .then(res => res.json())
+        .then(data => {
+
+            const item = data.find(i => i.id === selectedItemId);
+
+            const newStock = Number(item.stock_quantity) + Number(value);
+
+            updateStock(selectedItemId, newStock);
+        });
+}
+
+
+function decreaseStock() {
+
+    const value = prompt("Enter quantity to REMOVE:");
+
+    if (value === null || value === "") return;
+
+    fetch(`https://csir-canteen-backend.onrender.com/api/items`)
+        .then(res => res.json())
+        .then(data => {
+
+            const item = data.find(i => i.id === selectedItemId);
+
+            const newStock = Number(item.stock_quantity) - Number(value);
+
+            if (newStock < 0) {
+                alert("Stock cannot go below 0");
+                return;
+            }
+
+            updateStock(selectedItemId, newStock);
+        });
+}
+
+function loadHistory() {
+
+    fetch("https://csir-canteen-backend.onrender.com/api/history")
+        .then(res => res.json())
+        .then(data => {
+
+            let html = "";
+
+            data.forEach(item => {
+                html += `
+                    <tr>
+                        <td>${item.item_name}</td>
+                        <td>${item.change_quantity}</td>
+                        <td>${item.final_stock}</td>
+                        <td>${item.action_type}</td>
+                        <td>${item.created_at}</td>
+                    </tr>
+                `;
+            });
+
+            document.getElementById("historyTable").innerHTML = html;
+        });
+}
+
+
+function openHistory() {
+    window.location.href = "history.html";
 }
