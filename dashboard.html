@@ -28,15 +28,20 @@
 <!-- CARDS -->
 <div class="cards">
 
-    <div class="card">
+    <div class="card" onclick="openItemsPage()">
         <h3>📦 Total Items</h3>
         <p id="totalItems">0</p>
     </div>
 
     <!-- LOW STOCK CARD (CLICKABLE BUTTON STYLE) -->
-    <div class="card" onclick="toggleLowStock()" id="lowStockCard">
+    <div class="card" onclick="openLowStockPage()" id="lowStockCard">
         <h3>⚠️ Low Stock Items</h3>
         <p id="lowStock">0</p>
+    </div>
+
+    <div class="card" onclick="openHistory()">
+        <h3>📜 Stock History</h3>
+        <p>🗎</p>
     </div>
 
 </div>
@@ -91,25 +96,6 @@
 
 </div>
 
-<!-- INVENTORY -->
-<div class="table-card">
-
-    <h2>📦 Inventory</h2>
-
-    <table>
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Stock</th>
-                <th>Unit</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-
-        <tbody id="itemsTable"></tbody>
-    </table>
-
-</div>
 
 <!-- FOOTER -->
 <footer class="footer">
