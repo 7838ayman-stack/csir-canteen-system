@@ -1,6 +1,6 @@
 const cors = require("cors");
 const express = require("express");
-const connection = require("./connection");
+const connection = require("./db/connection");
 
 const app = express();
 app.use(express.json());
@@ -62,33 +62,63 @@ app.put("/api/items/:id", (req, res) => {
 
     const id = req.params.id;
     const { stock_quantity } = req.body;
+
     if (stock_quantity < 0) {
-    return res.status(400).json({
-        message: "Stock cannot be negative"
-    });
-}
+        return res.status(400).json({
+            message: "Stock cannot be negative"
+        });
+    }
 
-    const query =
-        "UPDATE items SET stock_quantity = ? WHERE id = ?";
-
+    // Step 1: get item details first
     connection.query(
-        query,
-        [stock_quantity, id],
+        "SELECT * FROM items WHERE id = ?",
+        [id],
         (err, result) => {
 
             if (err) {
-                return res.status(500).json({
-                    error: err.message
-                });
+                return res.status(500).json({ error: err.message });
             }
 
-            res.json({
-                message: "Stock Updated Successfully"
-            });
+            const item = result[0];
 
+            const oldStock = item.stock_quantity;
+            const newStock = stock_quantity;
+
+            let change = newStock - oldStock;
+
+            let actionType = change >= 0 ? "INCREASE" : "DECREASE";
+
+            // Step 2: update stock
+            connection.query(
+                "UPDATE items SET stock_quantity = ? WHERE id = ?",
+                [newStock, id],
+                (err2) => {
+
+                    if (err2) {
+                        return res.status(500).json({ error: err2.message });
+                    }
+
+                    // Step 3: insert history
+                    connection.query(
+                        `INSERT INTO stock_history 
+                        (item_name, change_quantity, final_stock, action_type)
+                        VALUES (?, ?, ?, ?)`,
+                        [
+                            item.name,
+                            change,
+                            newStock,
+                            actionType
+                        ]
+                    );
+
+                    res.json({
+                        message: "Stock Updated Successfully"
+                    });
+
+                }
+            );
         }
     );
-
 });
 
 app.delete("/api/items/:id", (req, res) => {
@@ -237,4 +267,21 @@ app.post("/api/login", (req, res) => {
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
+});
+
+
+app.get("/api/history", (req, res) => {
+
+    connection.query(
+        "SELECT * FROM stock_history ORDER BY created_at DESC",
+        (err, results) => {
+
+            if (err) {
+                return res.status(500).json({ error: err.message });
+            }
+
+            res.json(results);
+        }
+    );
+
 });
