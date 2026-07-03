@@ -9,6 +9,20 @@
 
 <h1>📜 Stock History</h1>
 
+<div style="margin:20px 0; display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+
+    <label>From:</label>
+    <input type="date" id="fromDate">
+
+    <label>To:</label>
+    <input type="date" id="toDate">
+
+    <button onclick="filterHistory()">Filter</button>
+
+    <button onclick="loadHistory()">Show All</button>
+
+</div>
+
 <button onclick="loadHistory()">Refresh</button>
 
 <table border="1">
