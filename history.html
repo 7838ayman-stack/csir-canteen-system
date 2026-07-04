@@ -7,25 +7,32 @@
 
 <body>
 
-<h1>📜 Stock History</h1>
+<div class="history-header">
 
-<div style="margin:20px 0; display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+    <h2>📜 Stock History</h2>
 
-    <label>From:</label>
+    <div class="filter-row">
+
+    <label for="fromDate">From:</label>
     <input type="date" id="fromDate">
 
-    <label>To:</label>
+    <label for="toDate">To:</label>
     <input type="date" id="toDate">
 
     <button onclick="filterHistory()">Filter</button>
-
     <button onclick="loadHistory()">Show All</button>
 
 </div>
 
-<button onclick="loadHistory()">Refresh</button>
+</div>
 
-<table border="1">
+<div class="refresh-container">
+    <button onclick="loadHistory()">Refresh</button>
+</div>
+
+<div class="table-card">
+
+<table>
     <thead>
         <tr>
             <th>Item</th>
@@ -39,6 +46,8 @@
     <tbody id="historyTable">
     </tbody>
 </table>
+
+</div>
 
 <script src="app.js"></script>
 
