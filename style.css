@@ -417,4 +417,64 @@ tr:hover {
     display: none !important;
 }
 
+.filter-row input[type="date"]{
+    flex: 0 0 140px !important;
+    width: 140px !important;
+    max-width: 140px !important;
+    min-width: 140px !important;
+}
 
+
+/* =========================
+   HISTORY HEADER
+========================= */
+
+.history-header{
+    background: linear-gradient(135deg,#005377,#0A6C94);
+    color:white;
+    padding:20px;
+    border-radius:18px;
+    margin-bottom:20px;
+
+    box-shadow:0 8px 20px rgba(0,0,0,0.08);
+}
+
+.history-header h2{
+    margin-top:0;
+    margin-bottom:15px;
+    color:white;
+}
+
+.history-header .filter-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex-wrap:nowrap;
+}
+
+.history-header input[type="date"]{
+    width:140px;
+    padding:8px;
+    border:none;
+    border-radius:8px;
+}
+
+.history-header button{
+    background:white;
+    color:#005377;
+    font-weight:bold;
+}
+
+.history-header button:hover{
+    background:#E8F4FA;
+}
+
+.filter-row label {
+    font-weight: 600;
+    color: #ffffff;
+    margin-left: 5px;
+}
+
+.refresh-container {
+    margin-bottom: 20px;
+}
