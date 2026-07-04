@@ -99,25 +99,37 @@ function toggleLowStock() {
 
 
 // ---------------- SEARCH ----------------
-function searchItem() {
+function searchItems() {
 
-    const name = document.getElementById("searchInput").value;
+    let input = document.getElementById("itemSearch");
+    if (!input) return; // prevents dashboard crash
 
-    fetch(`https://csir-canteen-backend.onrender.com/api/items/search?name=${name}`)
+    let name = input.value.toLowerCase();
+
+    fetch("https://csir-canteen-backend.onrender.com/api/items")
         .then(res => res.json())
         .then(data => {
 
+            let filtered = data.filter(item =>
+                item.name.toLowerCase().includes(name)
+            );
+
             let html = "";
 
-            data.forEach(item => {
+            filtered.forEach(item => {
                 html += `
                     <tr>
                         <td>${item.name}</td>
                         <td>${item.stock_quantity}</td>
                         <td>${item.unit}</td>
-                        <td>
-                            <button onclick="updateStock(${item.id})">Update</button>
-                            <button onclick="deleteItem(${item.id})">Delete</button>
+                        <td style="position:relative;">
+                            <button class="menu-btn" onclick="openMenu(event, ${item.id})">⋮</button>
+
+                            <div id="menu-${item.id}" class="dropdown-menu hidden">
+                                <button onclick="increasePrompt(${item.id})">➕ Increase</button>
+                                <button onclick="decreasePrompt(${item.id})">➖ Decrease</button>
+                                <button onclick="deleteItem(${item.id})">🗑 Delete</button>
+                            </div>
                         </td>
                     </tr>
                 `;
@@ -144,28 +156,6 @@ function deleteItem(id) {
 }
 
 
-// ---------------- UPDATE ----------------
-function updateStock(id) {
-
-    const stock = prompt("Enter new stock quantity:");
-
-    if (stock === null) return;
-
-    fetch(`https://csir-canteen-backend.onrender.com/api/items/${id}`, {
-        method: "PUT",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            stock_quantity: stock
-        })
-    })
-    .then(res => res.json())
-    .then(data => {
-        alert(data.message);
-        loadDashboard();
-    });
-}
 
 
 // ---------------- ADD ITEM ----------------
@@ -465,55 +455,7 @@ function openHistory() {
     window.location.href = "history.html";
 }
 
-
-function filterHistory() {
-
-    const from = document.getElementById("fromDate").value;
-    const to = document.getElementById("toDate").value;
-
-    fetch("https://csir-canteen-backend.onrender.com/api/history")
-        .then(res => res.json())
-        .then(data => {
-
-            let filteredData = data;
-
-            if (from) {
-                filteredData = filteredData.filter(item =>
-                    new Date(item.created_at) >= new Date(from)
-                );
-            }
-
-            if (to) {
-                filteredData = filteredData.filter(item =>
-                    new Date(item.created_at) <= new Date(to + "T23:59:59")
-                );
-            }
-
-            let html = "";
-
-            filteredData.forEach(item => {
-
-                const formattedDate = new Date(item.created_at).toLocaleString("en-IN", {
-                    timeZone: "Asia/Kolkata",
-                    day: "2-digit",
-                    month: "short",
-                    year: "numeric",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                    hour12: true
-                });
-
-                html += `
-                    <tr>
-                        <td>${item.item_name}</td>
-                        <td>${item.change_quantity}</td>
-                        <td>${item.final_stock}</td>
-                        <td>${item.action_type}</td>
-                        <td>${formattedDate}</td>
-                    </tr>
-                `;
-            });
-
-            document.getElementById("historyTable").innerHTML = html;
-        });
+function resetItems() {
+    document.getElementById("itemSearch").value = "";
+    loadItemsPage();
 }
