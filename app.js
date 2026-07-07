@@ -152,6 +152,7 @@ function deleteItem(id) {
     .then(data => {
         alert(data.message);
         loadDashboard();
+        loadItemsPage(); 
     });
 }
 
