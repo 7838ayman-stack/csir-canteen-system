@@ -173,11 +173,19 @@ function addItem() {
     .then(res => res.json())
     .then(data => {
 
-        document.getElementById("addMsg").innerText = data.message;
+    document.getElementById("addMsg").innerText = data.message;
 
-        loadDashboard(); // refresh table
+    document.getElementById("itemName").value = "";
+    document.getElementById("itemStock").value = "";
+    document.getElementById("itemUnit").value = "";
 
-    })
+    loadDashboard();
+
+    setTimeout(() => {
+        document.getElementById("addMsg").innerText = "";
+    }, 3000);
+
+})
     .catch(err => {
         console.log(err);
         document.getElementById("addMsg").innerText = "Error adding item";
